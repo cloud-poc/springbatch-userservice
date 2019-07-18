@@ -1,0 +1,53 @@
+spring:
+  batch:
+    job:
+      enabled: false
+    initialize-schema: always
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/batch?allowPublicKeyRetrieval=true&useSSL=false&charset=utf8
+    username: jamie
+    password: Hsbc1234
+    initialization-mode: always
+    hikari:
+      connection-test-query: SELECT 1
+      maximum-pool-size: 5
+      idle-timeout: 30000
+      minimum-idle: 2
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: false
+  cloud:
+    config:
+      discovery:
+        enabled: ${CONFIG_DISCOVERY_ENABLED:false}
+        service-id: ${CONFIG_DISCOVERY_SERVICE_ID:config-service}
+      uri:
+      - ${CONFIG_SERVICE_URL:http://localhost:8888}
+
+batch:
+  scheduling:
+    enabled: true
+  job:
+    name: importUserDataTest
+    chunk.size: 20
+    input:
+      file-source: c:/temp/source
+    ouput:
+      target-folder: c:/temp/target
+      group-by-day: true
+    failure:
+      target-folder: c:/temp/failure
+      group-by-day: true
+    scheduler:
+      cron: 0 */1 * * * ? #[s] [m] [h] [d] [m] [w] [y]
+
+logging:
+  level:
+    org.springframework.data: debug
+    org.springframework.batch: debug
