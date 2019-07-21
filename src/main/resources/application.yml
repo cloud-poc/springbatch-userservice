@@ -1,4 +1,10 @@
+server:
+  port: 10000
+
 spring:
+  profiles:
+    active:
+      - master
   batch:
     job:
       enabled: false
@@ -22,32 +28,28 @@ spring:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: false
-  cloud:
-    config:
-      discovery:
-        enabled: ${CONFIG_DISCOVERY_ENABLED:false}
-        service-id: ${CONFIG_DISCOVERY_SERVICE_ID:config-service}
-      uri:
-      - ${CONFIG_SERVICE_URL:http://localhost:8888}
-
+  rabbit:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    connRecvThreads: 5
+    channelCacheSize: 10
+    virtual-host: /
 batch:
   scheduling:
     enabled: true
+  partitioner:
+    partition: 1 # partition count, grid size
   job:
     name: importUserDataTest
     chunk.size: 20
     input:
-      file-source: c:/temp/source
+      path: c:/temp/source
+      filter: '.csv'
     ouput:
-      target-folder: c:/temp/target
-      group-by-day: true
+      path: c:/temp/target
     failure:
-      target-folder: c:/temp/failure
-      group-by-day: true
+      path: c:/temp/failure
     scheduler:
       cron: 0 */1 * * * ? #[s] [m] [h] [d] [m] [w] [y]
-
-logging:
-  level:
-    org.springframework.data: debug
-    org.springframework.batch: debug

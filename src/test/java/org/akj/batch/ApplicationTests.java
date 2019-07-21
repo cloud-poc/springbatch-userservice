@@ -8,6 +8,7 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +24,12 @@ public class ApplicationTests {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+
+	@Value("${batch.job.input.path}")
+	private String inputFolder;
+
+	@Value("${batch.job.input.filter}")
+	private String fileFilter;
 
 	@Test
 	public void launchJob() throws Exception {
